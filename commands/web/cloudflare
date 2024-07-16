@@ -1,0 +1,23 @@
+#!/bin/bash
+
+## Description: Publicly serves current project via Cloudflare Tunnel
+## Usage: cloudflare [flags] [args]
+## Example: "ddev cloudflare domain list"
+## ProjectTypes: wordpress
+
+# commands/tasks
+# - check for/install cloudflared package for their os
+# - set up cloudflared 
+#   - login
+#   - create tunnel
+#   - create route via flarectl
+#   - install as service
+#   - restart service to load new routes
+# - serve project
+#   - accept list of fqdns from cli input
+#   - check list for existing CNAME via flarectl 
+#       - or, actually, what happens if i try to create one when it already exists? ideally just fails gracefully
+#   - update config.yaml with newly provided routes
+# - Cleanup CNAMEs
+#   - check for CNAMEs that don't exist in the lis
+
