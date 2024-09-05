@@ -7,9 +7,7 @@ DDEV already has an [integration](https://ddev.readthedocs.io/en/stable/users/to
 
 [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/), on the other hand, allow you to create a secure (you don't need to have any ports open) tunnel between your DDEV server and Cloudflare, allowing you to publicly serve your DDEV Projects on *actual* subdomains on your *actual* domain. All while leveraging the full power of Cloudflare's CDN, WAF, and other Edge services. All for free. Each person on your team could have a `name-dev.yourproductiondomain.com` subdomain for easily and securely sharing what they are working on!
 
-> "this is the production-quality service that gets the closest to achieving the dream"
-
-is what the Github [Awesome Tunneling](https://github.com/anderspitman/awesome-tunneling?tab=readme-ov-file#recommendations) repo, which lists dozens of Open Source and Commercial tunnel options, has to say about Cloudflare Tunnels
+> "this is the production-quality service that gets the closest to achieving the dream" - Github [Awesome Tunneling](https://github.com/anderspitman/awesome-tunneling?tab=readme-ov-file#recommendations) repo
 
 Some relevant reading:
 * https://blog.cloudflare.com/tunnel-for-everyone/
