@@ -3,9 +3,7 @@ This ddev addon helps you easily serve your ddev projects with real public subdo
 
 ## Why does this exist?
 
-DDEV already has an [integration](https://ddev.readthedocs.io/en/stable/users/topics/sharing/) with [ngrok](https://duckduckgo.com/?q=ngrok&ia=web), which allows for accessing your DDEV project via a public url, [for free](https://ngrok.com/pricing). 
-
-However, this has a lot of complications and limitations, including getting a completely random domain name. 
+DDEV already has an [integration](https://ddev.readthedocs.io/en/stable/users/topics/sharing/) with [ngrok](https://duckduckgo.com/?q=ngrok&ia=web), which allows for accessing your DDEV project via a public url, [for free](https://ngrok.com/pricing). However, this has a lot of complications and limitations, including getting a completely random domain name.
 
 [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/), on the other hand, allow you to create a secure (you don't need to have any ports open) tunnel between your DDEV server and Cloudflare, allowing you to publicly serve your DDEV Projects on *actual* subdomains on your *actual* domain. All while leveraging the full power of Cloudflare's CDN, WAF, and other Edge services. All for free. Each person on your team could have a `name-dev.yourproductiondomain.com` subdomain for easily and securely sharing what they are working on!
 
@@ -13,10 +11,12 @@ However, this has a lot of complications and limitations, including getting a co
 
 is what the Github [Awesome Tunneling](https://github.com/anderspitman/awesome-tunneling?tab=readme-ov-file#recommendations) repo, which lists dozens of Open Source and Commercial tunnel options, has to say about Cloudflare Tunnels
 
-
 Some relevant reading:
 * https://blog.cloudflare.com/tunnel-for-everyone/
 * https://blog.cloudflare.com/ridiculously-easy-to-use-tunnels/
+
+
+This DDEV Add-on makes it completely seamless to both install, configure and serve your DDEV Projects via Cloudflare Tunnels. No futzing with config.yaml files is required - it is all done via a few cli commands and prompts, and the config work is handled by the addon. 
 
 ## How to use this
 ### Requirements
