@@ -1,5 +1,4 @@
-[![tests](https://github.com/ddev/ddev-ddev-cloudflare/actions/workflows/tests.yml/badge.svg)](https://github.com/ddev/ddev-ddev-cloudflare/actions/workflows/tests.yml) ![project is maintained](https://img.shields.io/maintenance/yes/2024.svg)
-## ddev-cloudflare
+## DDEV-Cloudflare
 This ddev addon helps you easily serve your ddev projects with real public subdomains via Cloudflare Tunnels
 
 ### Commands:
@@ -41,9 +40,7 @@ So, testing, debugging and contributions are very welcome.
 9. Test manually with `ddev get <owner/repo>`.
 10. You can test PRs with `ddev get https://github.com/<user>/<repo>/tarball/<branch>`
 11. Update the `README.md` to describe the add-on, how to use it, and how to contribute. If there are any manual actions that have to be taken, please explain them. If it requires special configuration of the using project, please explain how to do those. Examples in [ddev/ddev-solr](https://github.com/ddev/ddev-solr), [ddev/ddev-memcached](https://github.com/ddev/ddev-memcached), and (advanced) [ddev-platformsh](https://github.com/ddev/ddev-platformsh).
-12. Update the `README.md` header in Title Case format, for example, use `# DDEV Redis`, not `# ddev-redis`.
-13. Add a good short description to your repo, and add the [topic](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics) "ddev-get". It will immediately be added to the list provided by `ddev get --list --all`.
-14. When it has matured you will hopefully want to have it become an "official" maintained add-on. Open an issue in the [DDEV queue](https://github.com/ddev/ddev/issues) for that.
+
 
 Add-ons were covered in [DDEV Add-ons: Creating, maintaining, testing](https://www.dropbox.com/scl/fi/bnvlv7zswxwm8ix1s5u4t/2023-11-07_DDEV_Add-ons.mp4?rlkey=5cma8s11pscxq0skawsoqrscp&dl=0) (part of the [DDEV Contributor Live Training](https://ddev.com/blog/contributor-training)).
 
