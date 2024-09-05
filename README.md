@@ -25,6 +25,10 @@ Likewise, the workflow and integration with DDEV is probably not ideal.
 So, testing, debugging and contributions are very welcome.
 
 
+
+
+
+
 # Reference Notes from the Add-on Template for oustanding tasks
 ## Components of the repository
 
