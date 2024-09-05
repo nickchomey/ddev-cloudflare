@@ -7,7 +7,7 @@ name: ddev-share-cloudflare
 # or doing a sanity check for requirements.
 # DDEV environment variables can be interpolated into these actions
 pre_install_actions:
-  - rm -f ~/.ddev/commands/host/cloudflare
+  # - rm -f ~/.ddev/commands/host/cloudflare
   # make script executable, run as sudo, then delete it
   #- chmod +x ~/.ddev/cloudflared.sh && sudo ~/.ddev/cloudflared.sh && rm ~/.ddev/cloudflared.sh
   # Actions with #ddev-nodisplay will not show the execution of the action, but may show their output
@@ -85,8 +85,8 @@ post_install_actions:
   # - touch somefile.${GOOS}.${DDEV_WEBSERVER}
   # - perl -pi -e 's/oldstring/newstring/g' docker-compose.ddev-cloudflare.yaml
   # - commands/host/cloudflare
-  - rm -f ~/.ddev/commands/host/cloudflare
-  - ln -s /home/nick/tool-dev/ddev-cloudflare/commands/host/cloudflare /home/nick/.ddev/commands/host
+  # - rm -f ~/.ddev/commands/host/cloudflare
+  # - ln -s /home/nick/tool-dev/ddev-cloudflare/commands/host/cloudflare /home/nick/.ddev/commands/host
 
 # Shell actions that can be done during removal of the add-on
 removal_actions:

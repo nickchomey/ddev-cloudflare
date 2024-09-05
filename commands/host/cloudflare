@@ -5,7 +5,7 @@
 ## Example: "ddev cloudflare domain list"
 ## CanRunGlobally: true
 ## Flags: [{"Name":"flag1","Shorthand":"f","Usage":"flag1 usage"},{"Name":"flag2","Usage":"flag2 usage"}]
-
+#v3
 #ddev-generated
 
 # create hooks in each project to trigger things like templating rewrites, updating cloudflare tunnels etc...
