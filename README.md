@@ -1,40 +1,30 @@
-[![tests](https://github.com/ddev/ddev-addon-template/actions/workflows/tests.yml/badge.svg)](https://github.com/ddev/ddev-addon-template/actions/workflows/tests.yml) ![project is maintained](https://img.shields.io/maintenance/yes/2024.svg)
+[![tests](https://github.com/ddev/ddev-ddev-cloudflare/actions/workflows/tests.yml/badge.svg)](https://github.com/ddev/ddev-ddev-cloudflare/actions/workflows/tests.yml) ![project is maintained](https://img.shields.io/maintenance/yes/2024.svg)
+## ddev-cloudflare
+This ddev addon helps you easily serve your ddev projects with real public subdomains via Cloudflare Tunnels
 
-# ddev-addon-template <!-- omit in toc -->
+Commands:
+* `ddev cloudflare install` - installs, if necessary, the appropriate `cloudflared` and `flarectl` tools for your OS and CPU Architecture needed to automatically manage your Cloudflare Tunnels from the command line.
+    * `cloudflared` is for creating, managing and communicating over the actual tunnels
+    * `flarectl` will create, update and delete the DNS records in your Cloudflare account that are used to route the traffic to the appropriate tunnel (and, consequently, server(s))
+* `ddev cloudflare connect` - (re)connects a Cloudflare Tunnel to the local server.
+    * This only needs to be run once - as all traffic for all projects and domains will go through a single tunnel.
+    * It is run automaticallly when you initially `install`, but can be re-run to change the configuration
+* `ddev cloudflare serve` - Run this from within a DDEV project to set up new tunnel routes for that project's hostnames/fqdns
+    * It will prompt you for fqdns(s) to link to the DDEV project. It automatically sets the `additional_fqdns` field in the project's `config.yaml`, and also sets up any required DNS records (or clears unused ones).
+    * It will then restart the project, and you should be able to access the project from any public fqdns that you set - Cloudflare Tunnels and DDEV Traefik Router will handle it all.
 
-* [What is ddev-addon-template?](#what-is-ddev-addon-template)
-* [Components of the repository](#components-of-the-repository)
-* [Getting started](#getting-started)
-* [How to debug in Github Actions](#how-to-debug-tests-github-actions)
-
-## What is ddev-addon-template?
-
-This repository is a template for providing [DDEV](https://ddev.readthedocs.io) add-ons and services.
-
-In DDEV addons can be installed from the command line using the `ddev get` command, for example, `ddev get ddev/ddev-redis` or `ddev get ddev/ddev-solr`.
-
-This repository is a quick way to get started. You can create a new repo from this one by clicking the template button in the top right corner of the page.
-
-![template button](images/template-button.png)
+## Requirements
+* A Cloudflare account with at least one domain name/"zone"
+* Create an API Token that can edit Zone DNS. [Docs here](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/). You can specify which zones/domains you want it to have access to, or allow it to access all of your zones. If you have access to multiple accounts (e.g. personal, professional, client etc...), you may want to include access to only specific ones.
 
 ## Components of the repository
 
-* The fundamental contents of the add-on service or other component. For example, in this template there is a [docker-compose.addon-template.yaml](docker-compose.addon-template.yaml) file.
+* The fundamental contents of the add-on service or other component. For example, in this template there is a [docker-compose.ddev-cloudflare.yaml](docker-compose.ddev-cloudflare.yaml) file.
 * An [install.yaml](install.yaml) file that describes how to install the service or other component.
 * A test suite in [test.bats](tests/test.bats) that makes sure the service continues to work as expected.
 * [Github actions setup](.github/workflows/tests.yml) so that the tests run automatically when you push to the repository.
 
 ## Getting started
-
-1. Choose a good descriptive name for your add-on. It should probably start with "ddev-" and include the basic service or functionality. If it's particular to a specific CMS, perhaps `ddev-<CMS>-servicename`.
-2. Create the new template repository by using the template button.
-3. Globally replace "addon-template" with the name of your add-on.
-4. Add the files that need to be added to a DDEV project to the repository. For example, you might replace `docker-compose.addon-template.yaml` with the `docker-compose.*.yaml` for your recipe.
-5. Update the `install.yaml` to give the necessary instructions for installing the add-on:
-
-   * The fundamental line is the `project_files` directive, a list of files to be copied from this repo into the project `.ddev` directory.
-   * You can optionally add files to the `global_files` directive as well, which will cause files to be placed in the global `.ddev` directory, `~/.ddev`.
-   * Finally, `pre_install_commands` and `post_install_commands` are supported. These can use the host-side environment variables documented [in DDEV docs](https://ddev.readthedocs.io/en/latest/users/extend/custom-commands/#environment-variables-provided).
 
 6. Update `tests/test.bats` to provide a reasonable test for your repository. Tests are triggered either by manually executing `bats ./tests/test.bats`, automatically on every push to the repository, or periodically each night. Please make sure to attend to test failures when they happen. Others will be depending on you. Bats is a simple testing framework that just uses Bash. To run a Bats test locally, you have to [install bats-core](https://bats-core.readthedocs.io/en/stable/installation.html) first. Then you download your add-on, and finally run `bats ./tests/test.bats` within the root of the uncompressed directory. To learn more about Bats see the [documentation](https://bats-core.readthedocs.io/en/stable/).
 7. When everything is working, including the tests, you can push the repository to GitHub.
