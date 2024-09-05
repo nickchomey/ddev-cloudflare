@@ -280,12 +280,12 @@ install_flarectl() {
     fi
 
     latest_release_info=$(curl -s "https://api.github.com/repos/cloudflare/cloudflare-go/releases/latest")
-
+    
     # Extract the tag name from the latest release information
     latest_tag=$(echo "$latest_release_info" | jq -r '.tag_name')
-
+    
     formatted_tag=${latest_tag#v}
-    echo "Latest flarectl version: $formatted_tag"
+    echo "Latest flarectl version: $latest_tag"
     if [[ "$extracted_version" == "$formatted_tag" ]]; then
         echo "flarectl is already up to date"
         return
@@ -294,7 +294,7 @@ install_flarectl() {
     # Construct the download URL using the latest tag
     download_url="https://github.com/cloudflare/cloudflare-go/releases/download/${latest_tag}/flarectl_${formatted_tag}_${OS}_${ARCH}.tar.gz"
 
-    echo "Downloading flarectl ${latest_tag} for ${OS}_${ARCH}..."
+    echo "Downloading flarectl ${latest_tag} for ${OS}_${ARCH}... from $download_url"
 
     # Download the .tar.gz file to a temporary location
     curl -L "$download_url" -o /tmp/flarectl.tar.gz
