@@ -8,7 +8,7 @@ name: ddev-share-cloudflare
 # DDEV environment variables can be interpolated into these actions
 pre_install_actions:
   # make script executable, run as sudo, then delete it
-  - chmod +x ~/.ddev/cloudflared.sh && sudo ~/.ddev/cloudflared.sh && rm ~/.ddev/cloudflared.sh
+  #- chmod +x ~/.ddev/cloudflared.sh && sudo ~/.ddev/cloudflared.sh && rm ~/.ddev/cloudflared.sh
   # Actions with #ddev-nodisplay will not show the execution of the action, but may show their output
 # - |
 # #ddev-nodisplay
@@ -71,7 +71,7 @@ project_files:
 # List of files and directories that are copied into the global .ddev directory
 # DDEV environment variables can be interpolated into these filenames
 global_files:
-  - commands/web/cloudflare
+  - commands/host/cloudflare
 # - homeadditions/some-file.txt
 
 # List of add-on names that this add-on depends on
@@ -80,9 +80,12 @@ dependencies:
 
 # DDEV environment variables can be interpolated into these actions
 post_install_actions:
-# - chmod +x ~/.ddev/commands/web/somecommand
-# - touch somefile.${GOOS}.${DDEV_WEBSERVER}
-# - perl -pi -e 's/oldstring/newstring/g' docker-compose.addon-template.yaml
+  # - chmod +x ~/.ddev/commands/web/somecommand
+  # - touch somefile.${GOOS}.${DDEV_WEBSERVER}
+  # - perl -pi -e 's/oldstring/newstring/g' docker-compose.addon-template.yaml
+  # - commands/host/cloudflare
+  - rm -f ~/.ddev/commands/host/cloudflare
+  - ln -s /home/nick/tool-dev/ddev-cloudflare/commands/host/cloudflare /home/nick/.ddev/commands/host
 
 # Shell actions that can be done during removal of the add-on
 removal_actions:

@@ -95,17 +95,16 @@ install_windows() {
     # Install cloudflared using winget
     winget install --id Cloudflare.cloudflared
 }
+# Global variable for architecture and OS
+ARCH=""
+OS=""
+ID=""
 
-install() {
-
-    # check if cloudflared is already available in $PATH
-    if command -v cloudflared &>/dev/null; then
-        echo "cloudflared is already installed"
-        exit 0
-    fi
-
-    ARCH=$(uname -m)
-    case "$ARCH" in
+# Function to determine architecture
+get_architecture() {
+    local arch
+    arch=$(uname -m)
+    case "$arch" in
     x86_64)
         ARCH="amd64"
         ;;
@@ -116,70 +115,129 @@ install() {
         ARCH="armv6"
         ;;
     *)
-        echo "Unsupported CPU architecture for flarectl: $ARCH. You will need to create CNAME records manually for your Cloudflare Tunnel Routes"
+        echo "Unsupported CPU architecture for cloudflared: $arch. You will need to create CNAME records manually for your Cloudflare Tunnel Routes"
+        exit 1
         ;;
     esac
+}
 
-    # Determine OS and version
-    if [ -f /etc/os-release ]; then
+# Function to determine OS
+get_os_info() {
+    if command -v lsb_release >/dev/null 2>&1; then
+        # Use lsb_release if available
+        ID=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
+    elif [ -f /etc/os-release ]; then
+        # Fallback to /etc/os-release
         . /etc/os-release
-        case $ID in
-        amzn)
-            install_amazon_linux
-            ;;
-        debian | ubuntu)
-            install_debian_ubuntu
-            ;;
-        rhel)
-            install_rhel
-            ;;
-        centos)
+    else
+        # Use uname as a last resort
+        case "$(uname -s)" in
+        Linux)
             if [ -f /etc/centos-release ]; then
                 if grep -q "CentOS Stream" /etc/centos-release; then
-                    install_centos_8_stream
+                    ID="centos_stream"
                 else
-                    centos_version=$(cat /etc/centos-release | awk '{print $4}' | cut -d. -f1)
-                    case $centos_version in
-                    7)
-                        install_centos_7
-                        ;;
-                    *)
-                        echo "Unsupported CentOS version: $centos_version"
-                        exit 1
-                        ;;
-                    esac
+                    ID="centos"
                 fi
+            elif [ -f /etc/debian_version ]; then
+                ID="debian"
             else
-                echo "Cannot determine CentOS version"
-                exit 1
+                ID="linux"
             fi
             ;;
+        Darwin)
+            ID="darwin"
+            ;;
+        CYGWIN* | MINGW32* | MSYS* | MINGW*)
+            ID="windows"
+            ;;
         *)
-            echo "Unsupported OS: $ID"
+            echo "Unsupported OS"
             exit 1
             ;;
         esac
+    fi
+}
 
+# Function to set OS based on ID
+set_os_based_on_id() {
+    case $ID in
+    amzn | debian | ubuntu | rhel | centos)
         OS="linux"
-
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        #install_mac
+        ;;
+    darwin)
         OS="darwin"
-    elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
-        #install_windows
+        ;;
+    windows)
         OS="windows"
-    else
-        echo "Cannot determine OS"
+        ;;
+    *)
+        echo "Unsupported OS: $ID"
         exit 1
+        ;;
+    esac
+}
+
+install_cloudflared() {
+    # Check if cloudflared is already available in $PATH
+    if command -v cloudflared &>/dev/null; then
+        echo "cloudflared is already installed"
+        return
     fi
 
-    # if command -v cloudflared &> /dev/null; then
-    #     echo "cloudflared is already installed"
-    #     exit 0
-    # fi
+    case $ID in
+    amzn)
+        install_amazon_linux
+        ;;
+    debian | ubuntu)
+        install_debian_ubuntu
+        ;;
+    rhel)
+        install_rhel
+        ;;
+    centos)
+        if [ -f /etc/centos-release ]; then
+            if grep -q "CentOS Stream" /etc/centos-release; then
+                install_centos_8_stream
+            else
+                centos_version=$(awk '{print $4}' /etc/centos-release | cut -d. -f1)
+                case $centos_version in
+                7)
+                    install_centos_7
+                    ;;
+                *)
+                    echo "Unsupported CentOS version: $centos_version"
+                    exit 1
+                    ;;
+                esac
+            fi
+        else
+            echo "Cannot determine CentOS version"
+            exit 1
+        fi
+        ;;
+    darwin)
+        install_mac
 
-    flarectl_version=$(~/.ddev/bin/flarectl -version)
-    extracted_version=$(echo "$flarectl_version" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+        ;;
+    windows)
+        install_windows
+        ;;
+    *)
+        echo "Unsupported OS: $ID"
+        exit 1
+        ;;
+    esac
+}
+
+install_flarectl() {
+    flarectl_version=$(~/.ddev/bin/flarectl -version 2>/dev/null)
+    if [ $? -ne 0 ]; then
+        echo "flarectl is not installed"
+        extracted_version=""
+    else
+        extracted_version=$(echo "$flarectl_version" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    fi
 
     latest_release_info=$(curl -s "https://api.github.com/repos/cloudflare/cloudflare-go/releases/latest")
 
@@ -188,46 +246,65 @@ install() {
 
     formatted_tag=${latest_tag#v}
 
-    if [[ "$extracted_version" != "$formatted_tag" ]]; then
-
-        # Construct the download URL using the latest tag
-        download_url="https://github.com/cloudflare/cloudflare-go/releases/download/${latest_tag}/flarectl_${formatted_tag}_${OS}_${ARCH}.tar.gz"
-
-        echo "Downloading flarectl ${latest_tag} for ${OS}_${ARCH}..."
-
-        echo $download_url
-
-        # Download the .tar.gz file to a temporary location
-        curl -L "$download_url" -o /tmp/flarectl.tar.gz
-
-        # Unpack the .tar.gz file
-        tar -xzf /tmp/flarectl.tar.gz -C /tmp
-
-        # Move the extracted file(s) to the desired location
-        # Assuming 'flarectl' is the name of the binary in the tarball
-        mv /tmp/flarectl ~/.ddev/bin/
-
-        # Clean up the temporary .tar.gz file
-        rm /tmp/flarectl.tar.gz
-
-        #curl -L $download_url | tar -xz -C ~/.ddev/bin
-        sudo chmod +x ~/.ddev/bin/flarectl
-    else
-        echo "flarectl already up to date"
+    if [[ "$extracted_version" == "$formatted_tag" ]]; then
+        echo "flarectl is already up to date"
+        return
     fi
 
+    # Construct the download URL using the latest tag
+    download_url="https://github.com/cloudflare/cloudflare-go/releases/download/${latest_tag}/flarectl_${formatted_tag}_${OS}_${ARCH}.tar.gz"
+
+    echo "Downloading flarectl ${latest_tag} for ${OS}_${ARCH}..."
+
+    # Download the .tar.gz file to a temporary location
+    curl -L "$download_url" -o /tmp/flarectl.tar.gz
+
+    # Unpack the .tar.gz file
+    tar -xzf /tmp/flarectl.tar.gz -C /tmp
+
+    # Move the extracted file(s) to the desired location
+    # Assuming 'flarectl' is the name of the binary in the tarball
+    mv /tmp/flarectl ~/.ddev/bin/
+
+    # Clean up the temporary .tar.gz file
+    rm /tmp/flarectl.tar.gz
+
+    #curl -L $download_url | tar -xz -C ~/.ddev/bin
+    sudo chmod +x ~/.ddev/bin/flarectl
+}
+
+install() {
+    # Determine architecture
+    get_architecture
+
+    # Determine OS and version
+    get_os_info
+
+    # Set OS based on ID
+    set_os_based_on_id
+
+    # Install cloudflared if not already installed
+    install_cloudflared
+
+    # Install flarectl if not already installed
+    install_flarectl
+
+    # Connect to Cloudflare if not already connected
     connect
 }
 
 connect() {
     set_new_token=true
 
+    echo "
+Connecting to Cloudflare..."
+
     # check if there's already a token
     if [ -f ~/.cloudflared/token.txt ]; then
         # read the value
         cf_token=$(cat ~/.cloudflared/token.txt)
 
-        read -p "
+        read -r -p "
 Token \"$cf_token\" already exists. Would you like to replace it (y/N)? 
 " confirmation
 
@@ -244,10 +321,10 @@ Token \"$cf_token\" already exists. Would you like to replace it (y/N)?
     fi
 
     if $set_new_token; then
-        read -p "
-        
+        read -r -p "
 Enter your Cloudflare API token: " cf
-        echo $cf >~/.cloudflared/token.txt
+        echo "$cf" >~/.cloudflared/token.txt
+        echo "Token saved to ~/.cloudflared/token.txt"
     fi
 
     set_new_login=true
@@ -255,8 +332,8 @@ Enter your Cloudflare API token: " cf
     #check for ~/.cloudflared/cert.pem
     if [ -f ~/.cloudflared/cert.pem ]; then
 
-        read -p "
-You have already connected your server with the Cloudflare Tunnels service. This will work across all of your registered zones/domains in Cloudflare. 
+        read -r -p "
+You have already connected your server with the Cloudflare Tunnels service. This will work across all of your registered zones/domains in Cloudflare.
 
 Would you like to replace it (y/N)? " confirmation
 
@@ -299,7 +376,7 @@ Would you like to replace it (y/N)? " confirmation
 
     # if create_tunnel is true, prompt for tunnel name
     if $create_tunnel; then
-        read -p "
+        read -r -p "
 Enter the name of the tunnel you would like to create: " tunnel_name
 
         #~/.ddev/bin/cloudflared tunnel create $tunnel_name
@@ -341,7 +418,7 @@ Updating ~/.cloudflared/config.yml file
 serve() {
 
     # need this to receive fqdn(s) from user
-    read -p "Enter the fully qualified domain(s) you want to serve separated by a space (e.g. ddev.xyz.com bob.xyz.com test.ddev.abc.net): 
+    read -r -p "Enter the fully qualified domain(s) you want to serve separated by a space (e.g. ddev.xyz.com bob.xyz.com test.ddev.abc.net):
 
 " -a domain_list
 
@@ -353,7 +430,7 @@ serve() {
 
     # read tunnel+id from json config
     # Get the first JSON file in the directory
-    json_file=$(ls ~/.cloudflared/*.json | head -n 1)
+    json_file=$(find ~/.cloudflared -maxdepth 1 -type f -name "*.json" | head -n 1)
 
     # Extract the filename without the path and extension
     filename_without_extension="${json_file##*/}"
@@ -407,8 +484,8 @@ serve() {
             if $create_dns_record; then
                 echo "
     Updating $cname CNAME record for domain $domain and tunnel $tunnel_id."
-                update_response=$(~/.ddev/bin/flarectl --json dns create-or-update --zone $domain --type cname --name $cname --content "$tunnel_id.cfargotunnel.com" --proxy true)
-
+                update_response=$(~/.ddev/bin/flarectl --json dns create-or-update --zone "$domain" --type cname --name "$cname" --content "$tunnel_id.cfargotunnel.com" --proxy true)
+                echo "$update_response"
             fi
             # if the record was successfully updated, add the route to ~/.cloudflared/config.yml if it isn't there already
             if ! grep -q "hostname: $i" ~/.cloudflared/config.yml; then
