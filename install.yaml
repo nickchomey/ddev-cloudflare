@@ -62,7 +62,7 @@ pre_install_actions:
 # If you use directories, they must be directories that are managed
 # by this add-on, or removal could remove things that are not owned by it
 project_files:
-# - docker-compose.addon-template.yaml
+# - docker-compose.ddev-cloudflare.yaml
 # - some-directory/file1.txt
 # - some-directory/file2.txt
 # - extra_files_dir_created_by_this_template/
@@ -82,7 +82,7 @@ dependencies:
 post_install_actions:
   # - chmod +x ~/.ddev/commands/web/somecommand
   # - touch somefile.${GOOS}.${DDEV_WEBSERVER}
-  # - perl -pi -e 's/oldstring/newstring/g' docker-compose.addon-template.yaml
+  # - perl -pi -e 's/oldstring/newstring/g' docker-compose.ddev-cloudflare.yaml
   # - commands/host/cloudflare
   - rm -f ~/.ddev/commands/host/cloudflare
   - ln -s /home/nick/tool-dev/ddev-cloudflare/commands/host/cloudflare /home/nick/.ddev/commands/host

@@ -6,6 +6,45 @@
 ## CanRunGlobally: true
 ## Flags: [{"Name":"flag1","Shorthand":"f","Usage":"flag1 usage"},{"Name":"flag2","Usage":"flag2 usage"}]
 
+#ddev-generated
+
+# create hooks in each project to trigger things like templating rewrites, updating cloudflare tunnels etc...
+# hooks:
+#   post-start:
+#     - exec: "simple command expression"
+#     - exec: "ls >/dev/null && touch /var/www/html/somefile.txt"
+#     - exec-host: "simple command expression"
+#   post-import-db:
+#     - exec: "drush uli"
+
+# pre-start:
+# Only exec-host tasks can run during pre-start because the containers are not yet running. See Supported Tasks below.
+# post-start: Execute tasks after the project environment has started.
+# pre-import-db
+# post-import-db: Execute tasks before or after database import.
+# pre-import-files
+# post-import-files: Execute tasks before or after files are imported.
+# pre-composer
+# post-composer: Execute tasks before or after the composer command.
+# pre-stop
+# post-stop: Hooks into ddev stop. Execute tasks a
+# pre-pause:
+# post-pause:
+# pre-config
+# post-config
+# pre-exec
+# post-exec
+# pre-pull
+# post-pull
+# pre-push
+# post-push
+# pre-snapshot
+# post-snapshot
+# pre-delete-snapshot
+# post-delete-snapshot
+# pre-restore-snapshot
+# post-restore-snapshot: Execute as the name suggests.
+
 # install instructions are from here:
 # https://pkg.cloudflare.com/index.html#cloudflared-packages
 # https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/#windows
@@ -537,8 +576,13 @@ Adding CF Tunnel route for $i
 
     # Check if new_fqdns array is not empty, meaning that a new fqdns was added and ddev needs to be restarted for traefik to recognize the route
     if $need_restart; then
+        # sleep to allow Cloudflare DNS to propagate prior to restart, otherwise might get error message like
+        # "The hostname asdf.domain.com is not currently resolvable, trying to add it to the hosts file "
+        sleep 10
         ddev restart
     fi
+
+    # TODO: need to handle case in which fqdns might have been added to project's config.yaml without restarting the project
 
     sudo systemctl restart cloudflared.service
     exit
