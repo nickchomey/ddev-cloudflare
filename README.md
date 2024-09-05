@@ -25,6 +25,7 @@ Likewise, the workflow and integration with DDEV is probably not ideal.
 So, testing, debugging and contributions are very welcome.
 
 
+# Reference Notes from the Add-on Template for oustanding tasks
 ## Components of the repository
 
 * The fundamental contents of the add-on service or other component. For example, in this template there is a [docker-compose.ddev-cloudflare.yaml](docker-compose.ddev-cloudflare.yaml) file.
@@ -35,11 +36,9 @@ So, testing, debugging and contributions are very welcome.
 ## Getting started
 
 6. Update `tests/test.bats` to provide a reasonable test for your repository. Tests are triggered either by manually executing `bats ./tests/test.bats`, automatically on every push to the repository, or periodically each night. Please make sure to attend to test failures when they happen. Others will be depending on you. Bats is a simple testing framework that just uses Bash. To run a Bats test locally, you have to [install bats-core](https://bats-core.readthedocs.io/en/stable/installation.html) first. Then you download your add-on, and finally run `bats ./tests/test.bats` within the root of the uncompressed directory. To learn more about Bats see the [documentation](https://bats-core.readthedocs.io/en/stable/).
-7. When everything is working, including the tests, you can push the repository to GitHub.
-8. Create a [release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on GitHub.
-9. Test manually with `ddev get <owner/repo>`.
-10. You can test PRs with `ddev get https://github.com/<user>/<repo>/tarball/<branch>`
-11. Update the `README.md` to describe the add-on, how to use it, and how to contribute. If there are any manual actions that have to be taken, please explain them. If it requires special configuration of the using project, please explain how to do those. Examples in [ddev/ddev-solr](https://github.com/ddev/ddev-solr), [ddev/ddev-memcached](https://github.com/ddev/ddev-memcached), and (advanced) [ddev-platformsh](https://github.com/ddev/ddev-platformsh).
+7. Create a [release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on GitHub.
+8. Test manually with `ddev get <owner/repo>`.
+9.  You can test PRs with `ddev get https://github.com/<user>/<repo>/tarball/<branch>`
 
 
 Add-ons were covered in [DDEV Add-ons: Creating, maintaining, testing](https://www.dropbox.com/scl/fi/bnvlv7zswxwm8ix1s5u4t/2023-11-07_DDEV_Add-ons.mp4?rlkey=5cma8s11pscxq0skawsoqrscp&dl=0) (part of the [DDEV Contributor Live Training](https://ddev.com/blog/contributor-training)).
