@@ -2,9 +2,9 @@
 ## ddev-cloudflare
 This ddev addon helps you easily serve your ddev projects with real public subdomains via Cloudflare Tunnels
 
-Commands:
+### Commands:
 * `ddev cloudflare install` - installs, if necessary, the appropriate `cloudflared` and `flarectl` tools for your OS and CPU Architecture needed to automatically manage your Cloudflare Tunnels from the command line.
-    * `cloudflared` is for creating, managing and communicating over the actual tunnels
+    * `cloudflared` is for creating, managing and communicating over the actual tunnels. A systemd service will be created for it
     * `flarectl` will create, update and delete the DNS records in your Cloudflare account that are used to route the traffic to the appropriate tunnel (and, consequently, server(s))
 * `ddev cloudflare connect` - (re)connects a Cloudflare Tunnel to the local server.
     * This only needs to be run once - as all traffic for all projects and domains will go through a single tunnel.
@@ -16,6 +16,15 @@ Commands:
 ## Requirements
 * A Cloudflare account with at least one domain name/"zone"
 * Create an API Token that can edit Zone DNS. [Docs here](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/). You can specify which zones/domains you want it to have access to, or allow it to access all of your zones. If you have access to multiple accounts (e.g. personal, professional, client etc...), you may want to include access to only specific ones.
+
+
+## Help Needed
+This has only been tested on Ubuntu 24.04 in WSL2. However, code is in place to install and configure everything for other Linux Distros, macOS, and Windows. I assume that it does not work perfectly (or perhaps even at all) - in particular setting up `cloudflared` to run as a [system service](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/as-a-service/).
+
+Likewise, the workflow and integration with DDEV is probably not ideal.
+
+So, testing, debugging and contributions are very welcome.
+
 
 ## Components of the repository
 
