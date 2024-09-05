@@ -27,9 +27,9 @@ Some relevant reading on Cloudflare Tunnels:
 Run `ddev get github.com/nickchomey/ddev-cloudflare` from within a ddev project. **HOWEVER**, the addon is installed globally, so this only needs to be done once. The following commands will be available from any 
 
 ### Commands
-* `ddev cloudflare install` - installs, if necessary, the appropriate `cloudflared` and `flarectl` tools for your OS and CPU Architecture needed to automatically manage your Cloudflare Tunnels from the command line.
-    * `cloudflared` is for creating, managing and communicating over the actual tunnels. A systemd service will be created for it
-    * `flarectl` will create, update and delete the DNS records in your Cloudflare account that are used to route the traffic to the appropriate tunnel (and, consequently, server(s))
+* `ddev cloudflare install` - installs, if necessary, the appropriate `cloudflared` and `flarectl` tools for your OS and CPU Architecture. These are needed to automatically manage your Cloudflare Tunnels from the command line.
+    * `cloudflared` is for creating, managing and communicating over the actual tunnels. A system service will be created for it.
+    * `flarectl` will create, update and delete the DNS records in your Cloudflare account, which are used to route the traffic to the appropriate tunnel (and, consequently, server(s))
 * `ddev cloudflare connect` - (re)connects a Cloudflare Tunnel to the local server.
     * This only needs to be run once - as all traffic for all projects and domains will go through a single tunnel.
     * It is run automaticallly when you initially `install`, but can be re-run to change the configuration
