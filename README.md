@@ -2,8 +2,10 @@
 This ddev addon helps you easily serve your ddev projects with real public subdomains via Cloudflare Tunnels
 
 ## Why does this exist?
-
+### Why Not Ngrok?
 DDEV already has an [integration](https://ddev.readthedocs.io/en/stable/users/topics/sharing/) with [ngrok](https://duckduckgo.com/?q=ngrok&ia=web), which allows for accessing your DDEV project via a public url, [for free](https://ngrok.com/pricing). However, this has a lot of complications and limitations, including getting a completely random domain name.
+
+### Cloudflare Tunnels
 
 [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/), on the other hand, allow you to create a secure (you don't need to have any ports open) tunnel between your DDEV server and Cloudflare, allowing you to publicly serve your DDEV Projects on *actual* subdomains on your *actual* domain. All while leveraging the full power of Cloudflare's CDN, WAF, and other Edge services. All for free. Each person on your team could have a `name-dev.yourproductiondomain.com` subdomain for easily and securely sharing what they are working on!
 
@@ -19,6 +21,10 @@ Some relevant reading on Cloudflare Tunnels:
 ### Requirements
 * A Cloudflare account with at least one domain name/"zone"
 * Create an API Token that can edit Zone DNS. [Docs here](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/). You can specify which zones/domains you want it to have access to, or allow it to access all of your zones. If you have access to multiple accounts (e.g. personal, professional, client etc...), you may want to include access to only specific ones.
+
+
+### Install Add-on
+Run `ddev get github.com/nickchomey/ddev-cloudflare` from within a ddev project. **HOWEVER**, the addon is installed globally, so this only needs to be done once. The following commands will be available from any 
 
 ### Commands
 * `ddev cloudflare install` - installs, if necessary, the appropriate `cloudflared` and `flarectl` tools for your OS and CPU Architecture needed to automatically manage your Cloudflare Tunnels from the command line.

@@ -276,6 +276,7 @@ install_flarectl() {
         extracted_version=""
     else
         extracted_version=$(echo "$flarectl_version" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+        echo "Current flarectl version: $extracted_version"
     fi
 
     latest_release_info=$(curl -s "https://api.github.com/repos/cloudflare/cloudflare-go/releases/latest")
@@ -284,7 +285,7 @@ install_flarectl() {
     latest_tag=$(echo "$latest_release_info" | jq -r '.tag_name')
 
     formatted_tag=${latest_tag#v}
-
+    echo "Latest flarectl version: $formatted_tag"
     if [[ "$extracted_version" == "$formatted_tag" ]]; then
         echo "flarectl is already up to date"
         return
@@ -303,7 +304,7 @@ install_flarectl() {
 
     # Move the extracted file(s) to the desired location
     # Assuming 'flarectl' is the name of the binary in the tarball
-    mv /tmp/flarectl ~/.ddev/bin/
+    mv -f /tmp/flarectl ~/.ddev/bin/
 
     # Clean up the temporary .tar.gz file
     rm /tmp/flarectl.tar.gz
@@ -344,7 +345,7 @@ Connecting to Cloudflare..."
         cf_token=$(cat ~/.cloudflared/token.txt)
 
         read -r -p "
-Token \"$cf_token\" already exists. Would you like to replace it (y/N)? 
+CF API Token \"$cf_token\" already exists. Would you like to replace it (y/N)?
 " confirmation
 
         if [ -z "$confirmation" ]; then
