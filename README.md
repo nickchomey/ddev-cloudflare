@@ -1,5 +1,5 @@
 ## DDEV-Cloudflare
-This ddev addon helps you easily serve your ddev projects with real public subdomains via Cloudflare Tunnels
+This ddev add-on helps you easily serve your ddev projects with real public subdomains via Cloudflare Tunnels
 
 ## Why does this exist?
 ### Why Not Ngrok?
@@ -24,7 +24,7 @@ Some relevant reading on Cloudflare Tunnels:
 
 
 ### Install Add-on
-Run `ddev get github.com/nickchomey/ddev-cloudflare` from within a ddev project. **HOWEVER**, the addon is installed globally, so this only needs to be done once. The following commands will be available from any 
+Run `ddev get github.com/nickchomey/ddev-cloudflare` from within a ddev project. **HOWEVER**, the addon is installed globally, so this only needs to be done once. The following commands will be available from any project.
 
 ### Commands
 * `ddev cloudflare install` - installs, if necessary, the appropriate `cloudflared` and `flarectl` tools for your OS and CPU Architecture. These are needed to automatically manage your Cloudflare Tunnels from the command line.
@@ -33,10 +33,11 @@ Run `ddev get github.com/nickchomey/ddev-cloudflare` from within a ddev project.
 * `ddev cloudflare connect` - (re)connects a Cloudflare Tunnel to the local server.
     * This only needs to be run once - as all traffic for all projects and domains will go through a single tunnel.
     * It is run automaticallly when you initially `install`, but can be re-run to change the configuration
-* `ddev cloudflare serve` - Run this from within a DDEV project to set up new tunnel routes for that project's hostnames/fqdns
-    * It will prompt you for fqdns(s) to link to the DDEV project. It automatically sets the `additional_fqdns` field in the project's `config.yaml`, and also sets up any required DNS records (or clears unused ones).
-    * It will then restart the project, and you should be able to access the project from any public fqdns that you set - Cloudflare Tunnels and DDEV Traefik Router will handle it all.
-
+* `ddev cloudflare serve [list|add|remove]` - Run this from within a DDEV project to manage tunnel routes for that project's fqdns
+    * list - Lists the fqdns for the current project and whether they are being served by Cloudflare Tunnel
+    * add - Adds new Cloudflare Tunnel Routes for this project. It will prompt you for fqdns(s) to link to the DDEV project. It automatically sets the `additional_fqdns` field in the project's `config.yaml`, and also sets up any required DNS records. It will then restart the project.
+    * remove - Removes existing Cloudflare Tunnel Routes for this project. It will prompt you for fqdns(s) to remove from Cloudflare Tunnel and DNS records. It will not remove them from the  `additional_fqdns` field in the project's `config.yaml`
+    
 
 ## Help Needed
 This has only been tested on Ubuntu 24.04 in WSL2. However, code is in place to install and configure everything for other Linux Distros, macOS, and Windows. I assume that it does not work perfectly (or perhaps even at all) - in particular setting up `cloudflared` to run as a [system service](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/as-a-service/).
@@ -47,7 +48,7 @@ So, testing, debugging and contributions are very welcome.
 
 Check the issues for outstanding tasks, or feel free to submit new ones.
 
-# Reference Notes from the Add-on Template for oustanding tasks
+# Reference Notes from the Add-on Template for outstanding tasks
 ## Components of the repository
 
 * The fundamental contents of the add-on service or other component. For example, in this template there is a [docker-compose.ddev-cloudflare.yaml](docker-compose.ddev-cloudflare.yaml) file.
