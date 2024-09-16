@@ -450,8 +450,10 @@ connect() {
     Creating ~/.cloudflared/config.yml file
 "
 
+        home_dir=$(eval echo ~$USER)
+
         echo "tunnel: $tunnel_id
-credentials-file: /home/nick/.cloudflared/$tunnel_id.json
+credentials-file: $home_dir/.cloudflared/$tunnel_id.json
 
 ingress:
   - service: https://localhost:8003" >~/.cloudflared/config.yml
@@ -467,7 +469,7 @@ ingress:
 
         #replace tunnel: and credentials-file: values in config.yml with $tunnel_id, just to be safe
         sed -i "s/tunnel: .*/tunnel: $tunnel_id/" ~/.cloudflared/config.yml
-        sed -i "s/credentials-file: .*/credentials-file: \/home\/nick\/.cloudflared\/$tunnel_id.json/" ~/.cloudflared/config.yml
+        sed -i "s/credentials-file: .*/credentials-file: \/home\/$USER\/.cloudflared\/$tunnel_id.json/" ~/.cloudflared/config.yml
         sudo ln -sf ~/.cloudflared/config.yml /etc/cloudflared/config.yml
     fi
 
