@@ -24,7 +24,22 @@ Some relevant reading on Cloudflare Tunnels:
 
 
 ### Install Add-on
-Run `ddev get github.com/nickchomey/ddev-cloudflare` from within a ddev project. **HOWEVER**, the addon is installed globally, so this only needs to be done once. The following commands will be available from any project.
+
+From within a DDEV project:
+
+For DDEV v1.23.5 or above run
+
+```sh
+ddev add-on get github.com/nickchomey/ddev-cloudflare
+```
+
+For earlier versions of DDEV run
+
+```sh
+ddev get github.com/nickchomey/ddev-cloudflare
+```
+
+**HOWEVER**, the addon is installed globally, so this only needs to be done once. The following commands will be available from any project.
 
 ### Commands
 * `ddev cloudflare install` - installs, if necessary, the appropriate `cloudflared` and `flarectl` tools for your OS and CPU Architecture. These are needed to automatically manage your Cloudflare Tunnels from the command line.
@@ -60,8 +75,8 @@ Check the issues for outstanding tasks, or feel free to submit new ones.
 
 6. Update `tests/test.bats` to provide a reasonable test for your repository. Tests are triggered either by manually executing `bats ./tests/test.bats`, automatically on every push to the repository, or periodically each night. Please make sure to attend to test failures when they happen. Others will be depending on you. Bats is a simple testing framework that just uses Bash. To run a Bats test locally, you have to [install bats-core](https://bats-core.readthedocs.io/en/stable/installation.html) first. Then you download your add-on, and finally run `bats ./tests/test.bats` within the root of the uncompressed directory. To learn more about Bats see the [documentation](https://bats-core.readthedocs.io/en/stable/).
 7. Create a [release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) on GitHub.
-8. Test manually with `ddev get <owner/repo>`.
-9.  You can test PRs with `ddev get https://github.com/<user>/<repo>/tarball/<branch>`
+8. Test manually with `ddev add-on get <owner/repo>` (or `ddev get <owner/repo>` for older versions of DDEV)
+9.  You can test PRs with `ddev add-on get https://github.com/<user>/<repo>/tarball/<branch>` (or `ddev get https://github.com/<user>/<repo>/tarball/<branch>` for older versions of DDEV)
 
 
 Add-ons were covered in [DDEV Add-ons: Creating, maintaining, testing](https://www.dropbox.com/scl/fi/bnvlv7zswxwm8ix1s5u4t/2023-11-07_DDEV_Add-ons.mp4?rlkey=5cma8s11pscxq0skawsoqrscp&dl=0) (part of the [DDEV Contributor Live Training](https://ddev.com/blog/contributor-training)).
